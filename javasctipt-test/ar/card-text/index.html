@@ -1,0 +1,62 @@
+<!doctype HTML>
+<html>
+<link rel="icon" href="data:;base64,iVBORw0KGgo=">
+<script src="js/aframe.min.js"></script>
+<script src="js/aframe-ar.js"></script>
+
+<!-- support 3D text -->
+<script src="js/aframe-text-geometry-component.min.js"></script>
+
+<body style="margin: 0px; overflow: hidden;">
+
+	<script>
+		var xx;
+		AFRAME.registerComponent('markerhandler', {
+		  init: function () {
+			this.el.sceneEl.addEventListener('markerFound', (va,p) => {
+			  // redirect to custom URL
+			  //window.location = 'https://github.com/AR-js-org/AR.js';
+			 // console.log('va---',va)
+			  xx = va;
+			  if( xx?.path[0]?.getElementsByTagName('a-text')[0]?.getAttribute('value') ){
+				
+					window.parent.postMessage({
+						'func': 'changeValue',
+						'message': xx.path[0].getElementsByTagName('a-text')[0].getAttribute('value')
+					}, "*");
+			  }
+			 
+			});
+		}
+		
+		});
+	  </script>
+
+<a-scene embedded vr-mode-ui="enabled: false;" arjs="debugUIEnabled: false;">
+
+	<a-assets>
+		<a-asset-item id="exoFont" src="fonts/exoBlack.typeface.json"></a-asset-item>
+		<img id="pixels" src="images/pixels.png" />
+	</a-assets>
+
+	
+
+	<!-- 3D text -->
+	<a-marker markerhandler type="pattern" url="data/hiro.patt">
+
+		<!-- 
+			using aframe-text-geometry component
+			can set: bevelSize, bevelThickness, curveSegments, font, height, size, style, value.
+			alignment (centering) may be tricky; try calculating bounding box and repositioning.
+			for more info, see: https://www.npmjs.com/package/aframe-text-geometry-component
+		 -->
+		
+		<a-text value="4242 4242 4242 4242" font="fonts/Exo2Bold.fnt" tabSize="4" color="red" rotation="-90 0 0" align="center" scale="1 1 1"></a-text>
+
+	</a-marker>
+
+    <a-entity camera></a-entity>
+    
+</a-scene>
+</body>
+</html>
